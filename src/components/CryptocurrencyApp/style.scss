@@ -3,3 +3,20 @@
   max-width: 800px;
   margin: 5rem auto;
 }
+
+.button-connect{
+  padding: 1rem;
+  
+  color: white;
+  font-size: 1rem;
+  min-width: 8.5rem;
+  &:hover{
+    cursor: pointer;
+  }
+  &.connect{
+    background-color: red;
+  }
+  &.disconnect{
+    background-color: green;
+  }
+}

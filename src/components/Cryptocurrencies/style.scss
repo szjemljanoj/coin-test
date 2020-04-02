@@ -1,0 +1,25 @@
+.cryptocurrencies {
+  max-height: 50rem;
+  overflow: scroll;
+  border: 1px solid grey;
+  padding: .5rem;
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+  }
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    &__change {
+      &.red {
+        color: red;
+      }
+      &.green {
+        color: green;
+      }
+    }
+  }
+}
+

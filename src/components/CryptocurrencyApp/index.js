@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import Header from '../Header';
+import CryptocurrencyFilter from '../CryptocurrencyFilter';
+import Cryptocurrencies from '../Cryptocurrencies';
 import cryptoсurrencyService from '../../services/cryptoсurrency.service.js';
 import './style.scss';
 
@@ -27,7 +30,6 @@ const Cryptocurrency = () => {
       };
       socket.onmessage = event => {
         let updateCoins = JSON.parse(event.data).data;
-        
         const currentCoins = data;
         const newCoins = currentCoins.map(coin => {
           const findCoin = updateCoins.find(updateCoin => updateCoin.s === coin.s);
@@ -59,9 +61,66 @@ const Cryptocurrency = () => {
     }
   }, [isConnect, flag]);
 
+  // GET LIST CATEGORY
+  let coinsCategory = [];
+
+  if (data.length) {
+    let listCoins = data.reduce((values, coint) => {
+      if (!values.includes(coint.q) && !values.includes(coint.pm)) {
+        if (coint.pm === coint.q) {
+          values = [...values, coint.q];
+        }
+      }
+      return values;
+    }, []);
+    listCoins = listCoins.reverse().map(coin => ({ name: coin, coins: [] }));
+
+    let listCoinsALTS = data.reduce((values, coin) => {
+      if (!values.includes(coin.q)) {
+        if (coin.pm === 'ALTS') {
+          values = [...values, coin.q];
+        }
+      }
+      return values;
+    }, []);
+    const alts = {
+      name: 'ALTS',
+      coins: [...listCoinsALTS]
+    };
+
+    let listCoinsUSD = data.reduce((values, coin) => {
+      if (!values.includes(coin.q)) {
+        if (coin.pm === 'USDⓈ') {
+          values = [...values, coin.q];
+        }
+      }
+      return values;
+    }, []);
+    const usd = {
+      name: 'USDⓈ',
+      coins: [...listCoinsUSD]
+    };
+
+    const coinsPm = [alts, usd];
+    coinsCategory = [...listCoins, ...coinsPm];
+  }
+
+  const filterCoins = filterBy => {
+    setFilteredCoins(filterBy);
+  };
+
+  const handleSocketConnect = () => {
+    setIsConnect(!isConnect);
+  };
+
   return (
     <div className="cryptocurrency-app">
-      <p> app </p>
+      <button type="button" className={`button-connect ${isConnect ?  'connect' : 'disconnect'}`} onClick={handleSocketConnect}>
+       {isConnect ? 'Disconnect' : 'Connect'}
+      </button>
+      <Header />
+      <CryptocurrencyFilter coinsCategory={coinsCategory} filterCoins={filterCoins} />
+      <Cryptocurrencies coins={data} filteredCoins={filteredCoins} />
     </div>
   );
 };

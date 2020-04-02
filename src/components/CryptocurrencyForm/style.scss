@@ -1,0 +1,10 @@
+.cryptocurrency-form {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  &-search {
+    width: 70%;
+    border: none;
+    font-size: 1rem;
+  }
+}
