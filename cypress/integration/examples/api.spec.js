@@ -1,6 +1,7 @@
 describe('Connect / disconnect button', () => {
   it('Should change text and class', () => {
     cy.visit('http://localhost:3000/');
+    cy.request('/http://localhost:3000/initCryptocarrency.json')
     cy.get('.button-connect')
       .should('have.text', 'Disconnect')
       .and('have.class', 'connect')
@@ -16,7 +17,7 @@ describe('Request API', () => {
       expect(response.status).to.eq(200);
     });
     cy.get('.cryptocurrencies-item').then($item=> {
-      expect($item, '3 items').to.have.length(621);
+      expect($item, '621 items').to.have.length(621);
     });
   });
 });

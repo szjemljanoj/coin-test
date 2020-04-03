@@ -117,7 +117,7 @@ const Cryptocurrency = () => {
   };
 
   return (
-    <>
+    <div>
       {isLoading ? (
         <Loader />
       ) : (
@@ -136,7 +136,7 @@ const Cryptocurrency = () => {
           <Cryptocurrencies coins={data} filteredCoins={filteredCoins} />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
