@@ -2,17 +2,42 @@
   max-height: 50rem;
   overflow: scroll;
   border: 1px solid grey;
-  padding: .5rem;
+  padding: 0.5rem;
   &-header {
     display: flex;
     justify-content: space-between;
     margin: 1rem 0;
+
+    &__item {
+      flex: 1;
+
+      &:first-child {
+        text-align: start;
+      }
+      &:last-child {
+        text-align: end;
+      }
+    }
   }
   &-item {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
+
+    &__name {
+      flex: 1;
+      text-align: start;
+    }
+
+    &__price {
+      flex: 1;
+      text-align: center;
+    }
+
     &__change {
+      flex: 1;
+      text-align: end;
+
       &.red {
         color: red;
       }
@@ -22,4 +47,3 @@
     }
   }
 }
-
