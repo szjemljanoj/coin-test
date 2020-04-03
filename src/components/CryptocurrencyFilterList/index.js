@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './style.scss';
 
-const CryptocurrencyList = ({ coinsCategory, filterCoins }) => {
+const CryptocurrencyList = ({ coinsCategory = [], filterCoins }) => {
   const [isActiv, setIsActiv] = useState('');
 
   const handleFilter = category => {
@@ -32,7 +33,7 @@ const CryptocurrencyList = ({ coinsCategory, filterCoins }) => {
           </div>
         ) : (
           <div key={cat.name} className="dropdown">
-            <button className="dropbtn">{cat.name} </button>
+            <button type="button" className="dropbtn">{cat.name} </button>
             <div className="dropdown-content">
               {cat.coins.map(coin => {
                 return <p key={coin} onClick={() => handleFilter(coin)}>{coin}</p>;
@@ -43,6 +44,16 @@ const CryptocurrencyList = ({ coinsCategory, filterCoins }) => {
       })}
     </div>
   );
+};
+
+CryptocurrencyList.propTypes = {
+  coinsCategory: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      coins: PropTypes.arrayOf(PropTypes.string)
+    }).isRequired
+  ).isRequired,
+  filterCoins: PropTypes.func.isRequired
 };
 
 export default CryptocurrencyList;

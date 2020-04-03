@@ -1,23 +1,26 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import Header from '../Header';
-import CryptocurrencyFilter from '../CryptocurrencyFilter';
 import Cryptocurrencies from '../Cryptocurrencies';
-import cryptoсurrencyService from '../../services/cryptoсurrency.service.js';
+import CryptocurrencyFilterList from '../CryptocurrencyFilterList';
+import CryptocurrencyForm from '../CryptocurrencyForm';
+import Loader from '../Loader';
+import cryptoсurrencyService from '../../services/cryptoсurrency.service';
 import './style.scss';
 
 const Cryptocurrency = () => {
   const [data, setData] = useState([]);
-  const [flag, setFlag] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [filteredCoins, setFilteredCoins] = useState('');
   const [isConnect, setIsConnect] = useState(true);
 
   // GET INIT DATA
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const response = await cryptoсurrencyService.getProducts();
-      const coinsWithStars = response.data.data.map(coin => ({ ...coin, star: false }));
-      setData(coinsWithStars);
-      setFlag(true);
+      setData(response.data.data);
+      setIsLoading(false);
     })();
   }, []);
 
@@ -29,7 +32,7 @@ const Cryptocurrency = () => {
         console.log('Successful connection.');
       };
       socket.onmessage = event => {
-        let updateCoins = JSON.parse(event.data).data;
+        const updateCoins = JSON.parse(event.data).data;
         const currentCoins = data;
         const newCoins = currentCoins.map(coin => {
           const findCoin = updateCoins.find(updateCoin => updateCoin.s === coin.s);
@@ -59,7 +62,7 @@ const Cryptocurrency = () => {
         console.log('Сonnection closed');
       };
     }
-  }, [isConnect, flag]);
+  }, [isConnect, isLoading]);
 
   // GET LIST CATEGORY
   let coinsCategory = [];
@@ -75,7 +78,7 @@ const Cryptocurrency = () => {
     }, []);
     listCoins = listCoins.reverse().map(coin => ({ name: coin, coins: [] }));
 
-    let listCoinsALTS = data.reduce((values, coin) => {
+    const listCoinsALTS = data.reduce((values, coin) => {
       if (!values.includes(coin.q)) {
         if (coin.pm === 'ALTS') {
           values = [...values, coin.q];
@@ -88,7 +91,7 @@ const Cryptocurrency = () => {
       coins: [...listCoinsALTS]
     };
 
-    let listCoinsUSD = data.reduce((values, coin) => {
+    const listCoinsUSD = data.reduce((values, coin) => {
       if (!values.includes(coin.q)) {
         if (coin.pm === 'USDⓈ') {
           values = [...values, coin.q];
@@ -114,14 +117,26 @@ const Cryptocurrency = () => {
   };
 
   return (
-    <div className="cryptocurrency-app">
-      <button type="button" className={`button-connect ${isConnect ?  'connect' : 'disconnect'}`} onClick={handleSocketConnect}>
-       {isConnect ? 'Disconnect' : 'Connect'}
-      </button>
-      <Header />
-      <CryptocurrencyFilter coinsCategory={coinsCategory} filterCoins={filterCoins} />
-      <Cryptocurrencies coins={data} filteredCoins={filteredCoins} />
-    </div>
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="cryptocurrency-app">
+          {isLoading && <Loader />}
+          <button
+            type="button"
+            className={`button-connect ${isConnect ? 'connect' : 'disconnect'}`}
+            onClick={handleSocketConnect}
+          >
+            {isConnect ? 'Disconnect' : 'Connect'}
+          </button>
+          <Header />
+          <CryptocurrencyFilterList coinsCategory={coinsCategory} filterCoins={filterCoins} />
+          <CryptocurrencyForm />
+          <Cryptocurrencies coins={data} filteredCoins={filteredCoins} />
+        </div>
+      )}
+    </>
   );
 };
 
